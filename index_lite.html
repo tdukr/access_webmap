@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8 />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui' />
+    <title>Administrative Services Time Accessibility</title>
+    <script src='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet-src.js'></script>
+    <script src="lib/leaflet-side-by-side.js"></script>
+    <link href='http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css' rel='stylesheet' />
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css" rel="stylesheet" type="text/css"/> 
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    #basemapslidercontainer {
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        z-index: 1000;
+    }
+
+    #basemapslider{
+        font-size:62.5%;
+        margin: 14px;
+        height: 125px;
+        width:7px;
+    }    
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+
+    <script>
+    var map = L.map('map').setView([49.0, 31.00], 6);
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibXlrb2xhLWtvenlyIiwiYSI6ImNpemNzeHBhaDAwNHkycW8wZm40OHptdTMifQ.6q-bTx4fwm9Ch-knzk1i3Q', {
+            maxZoom: 18,
+            attribution: '<&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors | ' +
+                    'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'mapbox.streets'
+        }).addTo(map);
+
+    var ar_layer = L.tileLayer('file:///G:/Desktop/2017.06.08 Access_WebMap/web/data/ar_3857/{z}/{x}/{y}.png', {
+        minZoom: 5,
+        maxZoom: 10,
+        tms: true,        
+    }).addTo(map);
+
+    var ae_layer = L.tileLayer('file:///G:/Desktop/2017.06.08 Access_WebMap/web/data/ae_3857/{z}/{x}/{y}.png', {
+        minZoom: 5,
+        maxZoom: 10,
+        tms: true,
+    }).addTo(map)
+
+    L.control.sideBySide(ar_layer, ae_layer).addTo(map);
+
+    $(document).ready(function () {
+        $("#basemapslider").slider({
+            animate: true,
+            value: 1,
+            orientation: "vertical",
+            min: 0,
+            max: 1,
+            step: 0.01,
+            slide: function (event, ui) {
+                ar_layer.setOpacity(ui.value),
+                ae_layer.setOpacity(ui.value);
+            }
+        });
+        $('#basemapslider').mousedown(function(){
+            map.dragging.disable();
+        })
+
+        $('#basemapslider').mouseup(function(){
+            map.dragging.enable();
+        })
+    })
+    </script>
+    
+    <div id="basemapslidercontainer">
+        <div id="basemapslider">
+            </div>
+    </div>
+</body>
+</html>
