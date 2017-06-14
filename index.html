@@ -28,7 +28,6 @@
         right: 10px;
         z-index: 1000;
     }
-
     #basemapslider{
         font-size:62.5%;
         margin: 14px;
@@ -63,8 +62,6 @@
         tms: true,
     }).addTo(map)
 
-    L.control.sideBySide(ar_layer, ae_layer).addTo(map);
-
     $(document).ready(function () {
         $("#basemapslider").slider({
             animate: true,
@@ -78,13 +75,11 @@
                 ae_layer.setOpacity(ui.value);
             }
         });
-        $('#basemapslider').mousedown(function(){
-            map.dragging.disable();
-        })
-
         $('#basemapslider').mouseup(function(){
             map.dragging.enable();
         })
+
+        L.control.sideBySide(ar_layer, ae_layer).addTo(map)
     })
     </script>
     
