@@ -51,13 +51,13 @@
             id: 'mapbox.streets'
         }).addTo(map);
 
-    var ar_layer = L.tileLayer('https://github.com/tdukr/access_webmap/tree/master/data/ar_3857/{z}/{x}/{y}.png', {
+    var ar_layer = L.tileLayer('data/ar_3857/{z}/{x}/{y}.png', {
         minZoom: 5,
         maxZoom: 10,
         tms: true,        
     }).addTo(map);
 
-    var ae_layer = L.tileLayer('https://github.com/tdukr/access_webmap/tree/master/data/ae_3857/{z}/{x}/{y}.png', {
+    var ae_layer = L.tileLayer('data/ae_3857/{z}/{x}/{y}.png', {
         minZoom: 5,
         maxZoom: 10,
         tms: true,
