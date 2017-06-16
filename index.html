@@ -34,7 +34,29 @@
             margin: 14px;
             height: 125px;
             width:7px;
-        }    
+        }
+        .info {
+            padding: 6px 8px; 
+            font: 14px/16px Arial, Helvetica, sans-serif; 
+            background: white; background: rgba(255,255,255,0.8); 
+            box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;
+        } 
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777; 
+        }
+        .legend {
+            text-align: left;
+            line-height: 18px; 
+            color: #555; 
+        } 
+        .legend i { 
+            width: 18px; 
+            height: 18px; 
+            float: left; 
+            margin-right: 8px; 
+            opacity: 0.7; 
+        }        
     </style>
 </head>
 
@@ -42,6 +64,7 @@
     <div id='map'></div>
 
     <script>
+        //general map state options
         var map = L.map('map')
         var southWest = L.latLng(40.00, 20.00),
         northEast = L.latLng(55.00, 43.00),
@@ -52,6 +75,7 @@
         map.setMinZoom(5);
         map.setMaxZoom(10);
 
+        // add basemap
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibXlrb2xhLWtvenlyIiwiYSI6ImNpemNzeHBhaDAwNHkycW8wZm40OHptdTMifQ.6q-bTx4fwm9Ch-knzk1i3Q', {
             maxZoom: 18,
             attribution: '<&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors | ' +
@@ -59,37 +83,108 @@
             id: 'mapbox.streets'
         }).addTo(map);
 
-    var ar_layer = L.tileLayer('data/ar_3857/{z}/{x}/{y}.png', {
-        minZoom: 5,
-        tms: true,        
-    }).addTo(map);
+        //add access real layer
+        var ar_layer = L.tileLayer('data/ar_3857/{z}/{x}/{y}.png', {
+            minZoom: 5,
+            tms: true,        
+        }).addTo(map);
+        //add access expert layer
+        var ae_layer = L.tileLayer('data/ae_3857/{z}/{x}/{y}.png', {
+            minZoom: 5,
+            tms: true,
+        }).addTo(map)
 
-    var ae_layer = L.tileLayer('data/ae_3857/{z}/{x}/{y}.png', {
-        minZoom: 5,
-        tms: true,
-    }).addTo(map)
+        function getColor_ae(d) {
+            return d == 30  ? '#ffdabf' :
+            d == 20  ? '#ffb68e' :
+            d == 10  ? '#ff6f2d' : 
+            '';
+        }
 
-    $(document).ready(function () {
-        $("#basemapslider").slider({
-            animate: true,
-            value: 1,
-            orientation: "vertical",
-            min: 0,
-            max: 1,
-            step: 0.01,
-            slide: function (event, ui) {
-                ar_layer.setOpacity(ui.value),
-                ae_layer.setOpacity(ui.value);
-            }
-        });
-        $('#basemapslider').mouseup(function(){
-            map.dragging.enable();
+        function getColor_ar(d) {
+            return d == 30  ? '#ffdfbf' :
+            d == 20  ? '#ffc08e' :
+            d == 10  ? '#ff822d' : 
+            '';
+        }
+
+        // Legend for "ACCESS EXPERT (right) MAP"
+        var legend_ae = L.control({position: 'bottomright'});
+
+        legend_ae.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [10, 20, 30],
+                labels = [],
+                percentage = ['??', '??', '??'],
+                from, to;
+
+            for (var i = 0; i < grades.length; i++) {
+                from = grades[i];
+                perc = percentage[i];
+
+                labels.push(
+                    '<i style="background:' + getColor_ae(from) + '"></i> ' +
+                    from + ' minutes ' + perc + '%');
+                }
+
+            div.innerHTML = labels.join('<br>');
+            return div;
+        };
+
+        legend_ae.addTo(map);
+
+        // Legend for "ACCESS REAL (left) MAP"
+        var legend_ar = L.control({position: 'bottomleft'});
+
+        legend_ar.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [10, 20, 30],
+                labels = [],
+                percentage = ['??', '??', '??'],
+                from, to;
+
+            for (var i = 0; i < grades.length; i++) {
+                from = grades[i];
+                perc = percentage[i];
+
+                labels.push(
+                    '<i style="background:' + getColor_ar(from) + '"></i> ' +
+                    from + ' minutes ' + perc + '%');
+                }
+
+            div.innerHTML = labels.join('<br>');
+            return div;
+        };
+
+        legend_ar.addTo(map);   
+
+        //add slider for changing layer transparency
+        $(document).ready(function () {
+            $("#basemapslider").slider({
+                animate: true,
+                value: 1,
+                orientation: "vertical",
+                min: 0,
+                max: 1,
+                step: 0.01,
+                slide: function (event, ui) {
+                    ar_layer.setOpacity(ui.value),
+                    ae_layer.setOpacity(ui.value);
+                }
+            });
+            $('#basemapslider').mouseup(function(){
+                map.dragging.enable();
+            })
+            //add side by side control
+            L.control.sideBySide(ar_layer, ae_layer).addTo(map)
         })
-
-        L.control.sideBySide(ar_layer, ae_layer).addTo(map)
-    })
     </script>
-    
+
+    <div class="info">
+        <a h4 = "Прогнозована доступність"></a>
+    </div>
     <div id="basemapslidercontainer">
         <div id="basemapslider">
             </div>
