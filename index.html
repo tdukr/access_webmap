@@ -26,8 +26,8 @@
         }
         #basemapslidercontainer {
             position: absolute;
-            top: 100px;
-            right: 10px;
+            top: 200px;
+            left: 10px;
             z-index: 1000;
         }
         #basemapslider{
@@ -168,10 +168,16 @@
             return this._div;
         };
 
+        function featureprops (props) {
+            var infocontent = [];
+            for (var prop in props) {
+                infocontent.push(prop + ': ' + props[prop]);
+            }
+            return infocontent.join('<br />');
+        };
+
         info.update = function (props) {
-            this._div.innerHTML = '<h4>Administrative Services Time Accessibility</h4>' +  (props ?
-                '<b>' + props.OTG + '</b><br /> Total population (2006): ' + (props.POPULATION / 1000).toFixed(1) + 'k ppl<br /> Number of units: ' + props.num_units
-                : 'Hover over an Amalgamated Community');
+            this._div.innerHTML = '<h4>Administrative Services Time Accessibility</h4>' + (props ? featureprops(props) : 'Hover over an Amalgamated Community');
         };
 
         info.addTo(map);
