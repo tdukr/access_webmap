@@ -170,7 +170,7 @@
 
         info.update = function (props) {
             this._div.innerHTML = '<h4>Administrative Services Time Accessibility</h4>' +  (props ?
-                '<b>' + props.OTG + '</b><br /> Total population (2006): ' + (props.POPULATION / 1000).toFixed(1) + 'k ppl<br /> Number of units: ' + props.num_units
+                '<b>' + props.OTG + '</b><br /> Total population ' + props.popul_text+ '<br /> Number of units: ' + props.num_units
                 : 'Hover over an Amalgamated Community');
         };
 
